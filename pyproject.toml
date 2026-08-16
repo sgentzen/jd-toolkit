@@ -7,7 +7,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "jd-toolkit"
-version = "0.1.0.dev0"
+version = "0.1.0"
 description = "Zero-dependency toolkit for job-description text: salary-band parsing, section extraction, ATS detection"
 readme = "README.md"
 license = "Apache-2.0"
