@@ -84,7 +84,7 @@ def _is_heading(line: str) -> bool:
 
     # 4. Short ALL-CAPS line. At least one alphabetic char, all uppercase.
     letters = [c for c in stripped if c.isalpha()]
-    if letters and all(c.isupper() for c in letters):
+    if letters and all(c.isupper() for c in letters):  # noqa: SIM103
         return True
 
     return False
