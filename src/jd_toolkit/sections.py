@@ -213,6 +213,7 @@ def _classify_heading(text: str) -> Literal["include", "exclude", "unknown"]:
 # one-liners.
 _PREAMBLE_MIN_CHARS_FOR_FILTERED = 200
 
+
 def _apply_budget(text: str, max_chars: int | None) -> tuple[str, bool]:
     """Clamp `text` to `max_chars`, returning `(text, truncated)`.
 

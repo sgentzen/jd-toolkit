@@ -6,9 +6,14 @@ for the section-classification rules these tests enforce.
 
 from __future__ import annotations
 
-from jd_toolkit.sections import ExtractionResult, extract_relevant_sections
-from jd_toolkit.sections import _is_heading, _heading_text
-from jd_toolkit.sections import strip_jd_boilerplate
+from jd_toolkit.sections import (
+    ExtractionResult,
+    _classify_heading,
+    _heading_text,
+    _is_heading,
+    extract_relevant_sections,
+    strip_jd_boilerplate,
+)
 
 
 def test_extraction_result_is_a_frozen_dataclass_with_documented_fields():
@@ -76,9 +81,6 @@ def test_heading_text_strips_markdown_and_bold_markers():
     assert _heading_text("__Bonus__") == "Bonus"
     assert _heading_text("Responsibilities:") == "Responsibilities"
     assert _heading_text("REQUIREMENTS") == "REQUIREMENTS"
-
-
-from jd_toolkit.sections import _classify_heading
 
 
 def test_classify_include_headings():
