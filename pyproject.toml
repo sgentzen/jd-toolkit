@@ -1,0 +1,58 @@
+[build-system]
+# Bounded deliberately: uv.lock does not cover build-system requirements, so
+# without a bound the backend is resolved fresh from PyPI at release time and a
+# bad hatchling release can break a publish that nothing else would catch.
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "jd-toolkit"
+version = "0.1.0.dev0"
+description = "Zero-dependency toolkit for job-description text: salary-band parsing, section extraction, ATS detection"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.11"
+authors = [
+    { name = "Scott Gentzen" },
+]
+keywords = ["job-description", "salary", "ats", "recruiting", "text-extraction", "job-search"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Text Processing",
+]
+# Zero runtime dependencies is a headline feature of this package. Keep it.
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.0",
+    "ruff>=0.16",
+    "mypy>=2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/sgentzen/jd-toolkit"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/jd_toolkit"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
