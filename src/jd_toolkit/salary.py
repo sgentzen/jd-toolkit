@@ -205,7 +205,7 @@ def _vouched_for(text: str, start: int, end: int) -> bool:
     return True
 
 
-def parse_annual_usd(raw: object) -> SalaryBand | None:
+def parse_annual_usd(raw: object, *, max_chars: int | None = None) -> SalaryBand | None:
     """Best-effort annual USD band from JD prose, or None when unsure.
 
     Every candidate band must clear three independent checks: two amounts, a
@@ -213,10 +213,21 @@ def parse_annual_usd(raw: object) -> SalaryBand | None:
     plausible annual magnitude. Surviving bands are unioned, mirroring the
     Greenhouse geo-zone rule — we can't know which band applies, so the honest
     answer is the span the employer published.
+
+    `max_chars` is an optional hard ceiling on the text scanned, mirroring
+    `extract_relevant_sections`; the default is no truncation. `_vouched_for`
+    runs `finditer` over the full text per candidate band, so cost is
+    quadratic in document length — a caller handed untrusted prose (a hostile
+    ATS response body, unbounded by any upstream fetch size limit) should pass
+    a budget rather than let this scale unbounded. A band that falls past the
+    cap is not found; that is a deliberate, caller-visible truncation, not a
+    parsing failure.
     """
     text = html_to_text(raw)
     if not text:
         return None
+    if max_chars is not None and len(text) > max_chars:
+        text = text[:max_chars]
 
     lows: list[int] = []
     highs: list[int] = []

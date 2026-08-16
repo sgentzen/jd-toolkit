@@ -44,6 +44,17 @@ a disqualifier like "reimbursement" or "bonus", and only by sitting closer.
 Multiple surviving bands (per-state pay tables) are unioned. HTML input is
 fine; it is flattened first (`html_to_text` is also exported).
 
+Vouching scans the full text per candidate band, so cost grows quadratically
+with document length. Pass `max_chars` to cap the text scanned when the input
+is untrusted or unbounded (e.g. a scraped response body):
+
+```python
+parse_annual_usd(raw_jd, max_chars=50_000)
+```
+
+A band that falls past the cap is not found — `max_chars` is optional and
+defaults to no truncation.
+
 ## Section extraction
 
 ```python

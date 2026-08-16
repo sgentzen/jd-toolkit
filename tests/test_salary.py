@@ -82,6 +82,32 @@ def test_hourly_rate_is_not_read_as_annual():
     assert parse_annual_usd("The pay rate is $85.00 - $120.00 per hour") is None
 
 
+# --- max_chars ---------------------------------------------------------------
+# `_vouched_for` runs `finditer` over the full text per candidate band, so cost
+# is quadratic in document length. `max_chars` lets a caller bound that before
+# handing this parser attacker-controlled prose (a hostile ATS response body).
+
+def test_max_chars_none_by_default_does_not_truncate():
+    text = ("filler " * 5000) + "Base salary range: $150,000 - $180,000"
+    result = parse_annual_usd(text)
+    assert result is not None
+    assert (result.min_usd, result.max_usd) == (150000, 180000)
+
+
+def test_max_chars_drops_a_band_that_falls_past_the_cap():
+    prefix = "filler " * 5000
+    text = prefix + "Base salary range: $150,000 - $180,000"
+    result = parse_annual_usd(text, max_chars=len(prefix) - 10)
+    assert result is None
+
+
+def test_max_chars_still_finds_a_band_within_the_cap():
+    text = "Base salary range: $150,000 - $180,000" + (" filler" * 5000)
+    result = parse_annual_usd(text, max_chars=1000)
+    assert result is not None
+    assert (result.min_usd, result.max_usd) == (150000, 180000)
+
+
 def test_implausibly_large_band_is_rejected():
     """Guards the '$5 million-$25 million/year' class."""
     assert parse_annual_usd("Salary range $5,000,000 - $25,000,000 per year") is None
